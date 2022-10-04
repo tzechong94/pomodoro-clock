@@ -3,18 +3,15 @@ import React from "react";
 const Navigation = ({ onRouteChange, currentRoute }) => {
     if (currentRoute === 'home') {
         return  (
-        <nav> 
-            <div>
-                <p onClick={() => onRouteChange('settings')}>Settings</p>
-            </div>
+        <nav className="navigation"> 
+            <p className="settings-btn" onClick={() => onRouteChange('settings')}>Settings</p>
+        
         </nav>
     )
     } else {
         return  (
-            <nav>
-                <div>
-                <p onClick={() => onRouteChange('home')}>Home</p>
-                </div>
+            <nav className="navigation">
+            <p className="settings-btn" onClick={() => onRouteChange('home')}>Home</p>
             </nav>
         )
     }

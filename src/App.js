@@ -23,14 +23,29 @@ function App() {
 
   let [ playstate, setPlayState ] = useState(false);
 
+  const pomoColor = 'hsl(0deg, 63%, 64%)';
+  const shortColor = 'hsl(174deg, 70%, 42%)';
+  const longColor = 'hsl(243deg, 84%, 76%)';
+  const pomoColorLight = 'hsl(0deg, 63%, 74%)';
+  const shortColorLight = 'hsl(174deg, 70%, 52%)';
+  const longColorLight = 'hsl(243deg, 84%, 86%)';
+
+
   // const [rerender, setRerender] = useState(false);
 
 
   useEffect(() => {
     clearInterval(interval.current);
-    // loadTime();
     countDown();
-    }, [displaytime, playstate, mode, currentRoute]);
+    // eslint-disable-next-line 
+    }, [displaytime, playstate, mode]);
+
+  useEffect(() => {
+    clearInterval(interval.current);
+    loadTime();
+    // eslint-disable-next-line 
+    }, [currentRoute]);
+  
 
   function currentMinute(time) {
     return Math.floor(time/60);
@@ -39,6 +54,7 @@ function App() {
   function currentSecond(time) {
     return time%60;
   }
+
 
   let interval = useRef(null);
 
@@ -66,7 +82,6 @@ function App() {
       setDisplaytime(longresttime);
       setMode("long");
       clearInterval(interval.current);
-    
     } else if (mode === "short") {
       console.log("short rest ended, work now");
       setDisplaytime(worktime);
@@ -96,11 +111,6 @@ function App() {
       setDisplaytime(longresttime);
     }
   }
-
-
-
-
-
 
   // function countDown() {
   //   clearInterval(interval.current);
@@ -257,9 +267,9 @@ function App() {
   
   function loadTime(){
     if (mode === 'pomodoro') {
-      setDisplaytime(worktime)
+      setDisplaytime(worktime);
     } else if (mode === 'short') {
-      setDisplaytime(shortresttime)
+      setDisplaytime(shortresttime);
     } else {
       setDisplaytime(longresttime);
     }
@@ -270,6 +280,10 @@ function App() {
       return
     } else {
       setMode("pomodoro");
+      document.querySelector(".App").style.backgroundColor = pomoColor;
+      document.querySelector("html").style.backgroundColor = pomoColor;
+      document.querySelector(".clock-container").style.backgroundColor = pomoColorLight;
+
       setDisplaytime(worktime);
       stopTime();
     }
@@ -280,6 +294,10 @@ function App() {
       return
     } else {
       setMode("short");
+      document.querySelector(".App").style.backgroundColor = shortColor;
+      document.querySelector("html").style.backgroundColor = shortColor;
+      document.querySelector(".clock-container").style.backgroundColor = shortColorLight;
+
       setDisplaytime(shortresttime)
       stopTime();
     }  
@@ -291,23 +309,24 @@ function App() {
     } else {
       setMode("long");
       setDisplaytime(longresttime);
+      document.querySelector(".App").style.backgroundColor = longColor;
+      document.querySelector("html").style.backgroundColor = longColor;
+      document.querySelector(".clock-container").style.backgroundColor = longColorLight;
       stopTime();
     } 
   }
 
   const onRouteChange = (route) => {
+    loadTime();
     if (route === 'settings') {
-      loadTime();
       setRoute('settings');
     } else {
-      loadTime();
-      setRoute('home')
+      setRoute('home');
     }
   }
 
   const onTimeSubmit = (pomodoro, short, long) => {
     resetTime();
-    loadTime();
     console.log(pomodoro, short, long);
     if (pomodoro === undefined) {
       setWorktime(25*60);
@@ -327,6 +346,7 @@ function App() {
     if (long) {
       setLongresttime(long*60);
     } 
+    onRouteChange();
   }
 
 
@@ -345,41 +365,29 @@ function App() {
 
   return (
     <div className="App">
-      <Navigation onRouteChange={onRouteChange} currentRoute={currentRoute}/>
-      <div className="container">
-      <div className="selection">
-        <button onClick={pomodoroBtn}>Pomodoro</button>
-        <button onClick={shortBreakBtn}>Short Break</button>
-        <button onClick={longBreakBtn}>Long Break</button>
-      </div>
+      <Navigation className="navigation" onRouteChange={onRouteChange} currentRoute={currentRoute}/>
 
-      { (currentRoute === "home") 
-      ?
-        (mode==="pomodoro")
+        { (currentRoute === "home") 
         ?
-        <Display displayTime={displaytime} currentMinute={currentMinute} currentSecond={currentSecond} />
-        : (mode==="short")
-        ?
-        <Display displayTime={displaytime} currentMinute={currentMinute} currentSecond={currentSecond} />
-        : 
-        <Display displayTime={displaytime} currentMinute={currentMinute} currentSecond={currentSecond} />          
-      : (<Settings
-      onRouteChange={onRouteChange}
-      onTimeSubmit={onTimeSubmit}/>
-      )
-    }
-    {
-      (!playstate) ?
-      <button onClick={startTime}>Start</button>
-      :
-      <button onClick={stopTime}>Stop</button>
-    }
+          (mode==="pomodoro")
+          ?
+          <Display displayTime={displaytime} currentMinute={currentMinute} currentSecond={currentSecond} pomodoroBtn={pomodoroBtn} shortBreakBtn={shortBreakBtn}
+          longBreakBtn={longBreakBtn} playstate={playstate} stopTime={stopTime} resetTime={resetTime} startTime={startTime} />
+          : (mode==="short")
+          ?
+          <Display displayTime={displaytime} currentMinute={currentMinute} currentSecond={currentSecond} pomodoroBtn={pomodoroBtn} shortBreakBtn={shortBreakBtn}
+          longBreakBtn={longBreakBtn} playstate={playstate} stopTime={stopTime} resetTime={resetTime} startTime={startTime} />
+          : 
+          <Display displayTime={displaytime} currentMinute={currentMinute} currentSecond={currentSecond} pomodoroBtn={pomodoroBtn} shortBreakBtn={shortBreakBtn}
+          longBreakBtn={longBreakBtn} playstate={playstate} stopTime={stopTime} resetTime={resetTime} startTime={startTime} />          
+        
+          : (<Settings
+        onRouteChange={onRouteChange}
+        onTimeSubmit={onTimeSubmit}
+        loadTime={loadTime}/>
+        )
+      }
     
-    <button onClick={resetTime}>Reset</button> 
-
-    
-    
-    </div>
     </div>
   );
 }

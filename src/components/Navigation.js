@@ -4,14 +4,14 @@ const Navigation = ({ onRouteChange, currentRoute }) => {
     if (currentRoute === 'home') {
         return  (
         <nav className="navigation"> 
-            <p className="settings-btn" onClick={() => onRouteChange('settings')}>Settings</p>
+            <p className="settings-btn settings-text" onClick={() => onRouteChange('settings')}>Settings</p>
         
         </nav>
     )
     } else {
         return  (
             <nav className="navigation">
-            <p className="settings-btn" onClick={() => onRouteChange('home')}>Home</p>
+            <p className="settings-btn settings-text" onClick={() => onRouteChange('home')}>Home</p>
             </nav>
         )
     }

@@ -6,6 +6,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: hsl(0deg, 63%, 64%);
+  transition: 1s;
+
 }
 
 code {
@@ -15,4 +17,6 @@ code {
 
 html {
   background-color: hsl(0deg, 63%, 64%);
+  transition: 1s;
+
 }
